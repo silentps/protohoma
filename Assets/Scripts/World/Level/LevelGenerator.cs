@@ -89,8 +89,8 @@ public class LevelGenerator : MonoBehaviour
         //Instantiate the finish platform
         GenerateLevelPart(lvl._levelParent.transform.parent, new Vector3(0, heightChange, currentZ), finishPlatform);
 
-        //FindObjectOfType<PlayerController>().ChangeMorph(lvl._startType);
-        //FindObjectOfType<AIController>().ChangeMorph(lvl._startType);
+        GameManager.Instance.EndPos = new Vector3(0, heightChange, currentZ);
+        GameManager.Instance.InitialDistanceToEnd = Vector3.Distance(FindObjectOfType<PlayerManager>().transform.position, GameManager.Instance.EndPos);
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public class LevelGenerator : MonoBehaviour
     {
         if(level > levels.Length)
         {
-            level = 0;
+            level = Random.Range(0, levels.Length);
         }
         GenerateLevel(levels[level]);
     }

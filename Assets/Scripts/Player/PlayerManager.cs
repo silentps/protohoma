@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
     float _camInitialHeight;
 
     float _initialCapsHeight;
-
+    bool _canMove;
 
 
     // Use this for initialization
@@ -35,13 +35,22 @@ public class PlayerManager : MonoBehaviour
 
     public void StartMoving()
     {
-        //Change animator's parameter value
-        _playerCharacter.GetComponent<Animator>().SetBool("isWalking", true);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!_canMove)
+        {
+            if(Input.GetMouseButton(0))
+            {
+                _canMove = true;
+                //Change animator's parameter value
+                _playerCharacter.GetComponent<Animator>().SetBool("isWalking", true);
+            }
+
+            return;
+        }
 #if UNITY_EDITOR
 
         if (Input.GetMouseButton(0))
@@ -71,6 +80,10 @@ public class PlayerManager : MonoBehaviour
         //Use player's z pos for camera pos
         _cam.transform.position = new Vector3(_cam.transform.position.x, _cam.transform.position.y, transform.position.z - _camOffset);
 
+
+
+        UIManager.Instance.UpdateProgressionBar(1.0f - Vector3.Distance(transform.position, GameManager.Instance.EndPos) / GameManager.Instance.InitialDistanceToEnd);
+        
     }
 
     void ChangeColliderSize()
@@ -118,7 +131,7 @@ public class PlayerManager : MonoBehaviour
         {
 
             //Update the position of the player
-            transform.position = new Vector3(transform.position.x, platformHeight + _currentFootSize, transform.position.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y + platformHeight + _currentFootSize, transform.position.z);
             //Call the methods to change collider, foot shoe size, player height and cam height
             ChangeColliderSize();
             ChangeFootShoeSize();
